@@ -62,12 +62,12 @@ const T = {
     chain_note: ".agent TLD 온체인 등록 준비 중",
     reset: "← 다시 생성하기",
     types: [
+      { v: "범우주 에이전트", e: "🌌", l: "범우주" },
       { v: "AI 어시스턴트", e: "🤖", l: "AI 어시스턴트" },
       { v: "트레이딩 봇", e: "📈", l: "트레이딩 봇" },
       { v: "창작 에이전트", e: "✍️", l: "창작" },
       { v: "리서치 에이전트", e: "🔬", l: "리서치" },
       { v: "보안 에이전트", e: "🛡️", l: "보안" },
-      { v: "범우주 에이전트", e: "🌌", l: "범우주" },
     ],
     caps: ["글쓰기 & 콘텐츠", "데이터 분석", "코드 생성", "트레이딩 & 금융", "리서치 & 검색", "멀티모달", "오케스트레이션", "보안 & 감사"],
     pers: [
@@ -117,12 +117,12 @@ const T = {
     chain_note: "On-chain registration via .agent TLD coming soon",
     reset: "← Generate new names",
     types: [
+      { v: "Universal Agent", e: "🌌", l: "Universal" },
       { v: "AI Assistant", e: "🤖", l: "AI Assistant" },
       { v: "Trading Bot", e: "📈", l: "Trading Bot" },
       { v: "Creative Agent", e: "✍️", l: "Creative" },
       { v: "Research Agent", e: "🔬", l: "Research" },
       { v: "Security Agent", e: "🛡️", l: "Security" },
-      { v: "Universal Agent", e: "🌌", l: "Universal" },
     ],
     caps: ["Writing & Content", "Data Analysis", "Code Generation", "Trading & Finance", "Research & Search", "Multi-modal", "Orchestration", "Security & Audit"],
     pers: [
@@ -142,8 +142,9 @@ const VIBE: Record<string, string> = {
 export default function Home() {
   const [lang, setLang] = useState<Lang>("ko");
   const [step, setStep] = useState<Step>(1);
+  const defaultType = (l: Lang) => l === "ko" ? "범우주 에이전트" : "Universal Agent";
   const [form, setForm] = useState<Form>({
-    agentName: "", agentType: "", capability: "", personality: "", purpose: "",
+    agentName: "", agentType: defaultType("ko"), capability: "", personality: "", purpose: "",
   });
   const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
@@ -182,7 +183,7 @@ export default function Home() {
       {/* Lang toggle */}
       <div style={{ position: "fixed", top: 16, right: 16, zIndex: 100, display: "flex", gap: 4, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: 10, padding: 4 }}>
         {(["ko", "en"] as Lang[]).map(l => (
-          <button key={l} onClick={() => setLang(l)} style={{
+          <button key={l} onClick={() => { setLang(l); setForm(f => ({ ...f, agentType: defaultType(l) })); }} style={{
             padding: "4px 12px", borderRadius: 7, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600,
             background: lang === l ? "rgba(139,92,246,0.3)" : "transparent",
             color: lang === l ? "#ddd6fe" : "rgba(200,185,255,0.4)",
