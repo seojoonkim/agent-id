@@ -115,15 +115,15 @@ export default function Home() {
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-blue-900/15 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4 py-16">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center py-12">
 
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 px-6">
           <div className="inline-flex items-center gap-2 badge badge-purple mb-4">
             <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse" />
             ERC-8004 · .agent TLD
           </div>
-          <h1 className="text-4xl font-bold tracking-tight mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
             <span className="text-gradient">Agent</span>
             <span className="text-white"> Naming Service</span>
           </h1>
@@ -132,9 +132,12 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Card wrapper with padding */}
+        <div className="w-full max-w-lg px-4 sm:px-6">
+
         {/* Progress */}
         {step < 4 && (
-          <div className="w-full max-w-md mb-6">
+          <div className="mb-5">
             <div className="flex justify-between text-xs text-purple-300/30 mb-2">
               <span>Step {step} of 3</span>
               <span>{Math.round(progress)}%</span>
@@ -146,7 +149,7 @@ export default function Home() {
         )}
 
         {/* Card */}
-        <div className="w-full max-w-lg card-glass rounded-2xl p-7">
+        <div className="w-full card-glass rounded-2xl p-5 sm:p-7">
 
           {/* ── STEP 1: Agent Info ── */}
           {step === 1 && (
@@ -357,6 +360,8 @@ export default function Home() {
             Agent Naming Service · ERC-8004 · .agent TLD
           </p>
         </div>
+
+        </div>{/* end card wrapper */}
       </div>
     </div>
   );
