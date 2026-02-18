@@ -1,367 +1,305 @@
 "use client";
-
 import { useState } from "react";
 import Stars from "@/components/Stars";
 
 type Step = 1 | 2 | 3 | 4;
 
-interface FormData {
-  agentName: string;
-  agentType: string;
-  capability: string;
-  personality: string;
-  purpose: string;
+interface Form {
+  agentName: string; agentType: string;
+  capability: string; personality: string; purpose: string;
 }
 
 interface NameResult {
-  name: string;
-  domain: string;
-  ipa: string;
-  tagline: string;
-  meaning: string;
-  fit: string;
+  name: string; domain: string; ipa: string;
+  tagline: string; meaning: string; fit: string;
   vibe: "strong" | "gentle" | "mysterious" | "balanced";
 }
 
-interface GenerateResult {
-  analysis: {
-    input_breakdown: string;
-    naming_strategy: string;
-  };
+interface Result {
+  analysis: { input_breakdown: string; naming_strategy: string; };
   names: NameResult[];
 }
 
-const AGENT_TYPES = [
-  { value: "AI Assistant", icon: "🤖", label: "AI Assistant" },
-  { value: "Trading Bot", icon: "📈", label: "Trading Bot" },
-  { value: "Creative Agent", icon: "✍️", label: "Creative Agent" },
-  { value: "Research Agent", icon: "🔬", label: "Research Agent" },
-  { value: "Security Agent", icon: "🛡️", label: "Security Agent" },
-  { value: "Universal Agent", icon: "🌌", label: "Universal Agent" },
+const TYPES = [
+  { v: "AI Assistant", e: "🤖", l: "AI Assistant" },
+  { v: "Trading Bot", e: "📈", l: "Trading Bot" },
+  { v: "Creative Agent", e: "✍️", l: "Creative" },
+  { v: "Research Agent", e: "🔬", l: "Research" },
+  { v: "Security Agent", e: "🛡️", l: "Security" },
+  { v: "Universal Agent", e: "🌌", l: "Universal" },
 ];
 
-const CAPABILITIES = [
+const CAPS = [
   "Writing & Content", "Data Analysis", "Code Generation",
   "Trading & Finance", "Research & Search", "Multi-modal",
   "Orchestration", "Security & Audit",
 ];
 
 const PERSONALITIES = [
-  { value: "sharp", label: "⚡ Sharp", desc: "Fast, decisive, precise" },
-  { value: "deep", label: "🌊 Deep", desc: "Thoughtful, thorough, wise" },
-  { value: "bold", label: "🔥 Bold", desc: "Assertive, direct, fearless" },
-  { value: "fluid", label: "✨ Fluid", desc: "Adaptive, creative, open" },
+  { v: "sharp", e: "⚡", l: "Sharp", d: "Fast & decisive" },
+  { v: "deep", e: "🌊", l: "Deep", d: "Thoughtful & wise" },
+  { v: "bold", e: "🔥", l: "Bold", d: "Assertive & fearless" },
+  { v: "fluid", e: "✨", l: "Fluid", d: "Adaptive & creative" },
 ];
 
-const VIBE_COLORS: Record<string, string> = {
-  strong: "text-red-400",
-  gentle: "text-blue-400",
-  mysterious: "text-purple-400",
-  balanced: "text-green-400",
+const VIBE: Record<string, string> = {
+  strong: "vibe-strong", gentle: "vibe-gentle",
+  mysterious: "vibe-mysterious", balanced: "vibe-balanced",
 };
 
 export default function Home() {
   const [step, setStep] = useState<Step>(1);
-  const [form, setForm] = useState<FormData>({
-    agentName: "", agentType: "", capability: "",
-    personality: "", purpose: "",
+  const [form, setForm] = useState<Form>({
+    agentName: "", agentType: "", capability: "", personality: "", purpose: "",
   });
-  const [result, setResult] = useState<GenerateResult | null>(null);
+  const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [selected, setSelected] = useState<number | null>(null);
+  const [picked, setPicked] = useState<number | null>(null);
 
-  const handleGenerate = async () => {
-    setLoading(true);
-    setError("");
+  const generate = async () => {
+    setLoading(true); setError("");
     try {
       const res = await fetch("/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      setResult(data);
-      setStep(4);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Error occurred");
-    } finally {
-      setLoading(false);
-    }
+      setResult(data); setStep(4);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error");
+    } finally { setLoading(false); }
   };
 
   const reset = () => {
-    setStep(1);
-    setForm({ agentName: "", agentType: "", capability: "", personality: "", purpose: "" });
-    setResult(null);
-    setError("");
-    setSelected(null);
+    setStep(1); setForm({ agentName: "", agentType: "", capability: "", personality: "", purpose: "" });
+    setResult(null); setError(""); setPicked(null);
   };
 
-  const progress = ((step - 1) / 3) * 100;
-  const canNext1 = form.agentName.trim() && form.agentType;
-  const canNext2 = form.capability && form.personality;
-  const canGenerate = form.purpose.trim();
-
   return (
-    <div className="relative min-h-screen">
+    <div style={{ background: "#04000f", minHeight: "100vh" }}>
       <Stars />
 
-      {/* Bg blobs */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-[#010007]" />
-        <div className="absolute top-1/3 left-1/4 w-80 h-80 bg-violet-900/15 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-blue-900/15 rounded-full blur-3xl" />
-      </div>
+      {/* Nebula blobs */}
+      <div className="nebula" style={{ top: "10%", left: "15%", width: 400, height: 400, background: "rgba(88,28,220,0.12)" }} />
+      <div className="nebula" style={{ bottom: "15%", right: "10%", width: 300, height: 300, background: "rgba(37,99,235,0.1)" }} />
+      <div className="nebula" style={{ top: "60%", left: "50%", width: 250, height: 250, background: "rgba(139,92,246,0.08)" }} />
 
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center py-12">
+      <div style={{ position: "relative", zIndex: 10, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 20px" }}>
 
-        {/* Header */}
-        <div className="text-center mb-8 px-6">
-          <div className="inline-flex items-center gap-2 badge badge-purple mb-4">
-            <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse" />
+        {/* ── Hero ── */}
+        <div style={{ textAlign: "center", marginBottom: 36, maxWidth: 480 }}>
+          <div className="badge badge-purple" style={{ marginBottom: 16 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8b5cf6", display: "inline-block", animation: "twinkle 2s infinite" }} />
             ERC-8004 · .agent TLD
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
-            <span className="text-gradient">Agent</span>
-            <span className="text-white"> Naming Service</span>
+          <h1 style={{ fontSize: "clamp(28px,5vw,42px)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.15, marginBottom: 10 }}>
+            <span className="grad">Agent</span>
+            <span style={{ color: "#f0ebff" }}> Naming</span><br />
+            <span style={{ color: "#f0ebff" }}>Service</span>
           </h1>
-          <p className="text-purple-200/40 text-sm">
-            Name your agent. Register on-chain. Own your identity.
+          <p style={{ color: "rgba(200,185,255,0.4)", fontSize: 14, lineHeight: 1.6 }}>
+            Name your agent. Register on-chain. Own your identity forever.
           </p>
         </div>
 
-        {/* Card wrapper with padding */}
-        <div className="w-full max-w-lg px-4 sm:px-6">
-
-        {/* Progress */}
+        {/* ── Step indicators ── */}
         {step < 4 && (
-          <div className="mb-5">
-            <div className="flex justify-between text-xs text-purple-300/30 mb-2">
-              <span>Step {step} of 3</span>
-              <span>{Math.round(progress)}%</span>
-            </div>
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: `${progress}%` }} />
-            </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
+            {[1, 2, 3].map(s => (
+              <div key={s} className={`step-dot ${step === s ? "active" : step > s ? "done" : ""}`} />
+            ))}
           </div>
         )}
 
-        {/* Card */}
-        <div className="w-full card-glass rounded-2xl p-5 sm:p-7">
+        {/* ── Card ── */}
+        <div style={{ width: "100%", maxWidth: 460 }}>
+          <div className="glass fade-up" style={{ borderRadius: 20, padding: "28px 24px" }}>
 
-          {/* ── STEP 1: Agent Info ── */}
-          {step === 1 && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-lg font-semibold text-white">Tell us about your agent</h2>
-                <p className="text-purple-300/40 text-xs mt-0.5">We'll analyze it to generate the perfect name</p>
-              </div>
-
-              <div>
-                <label className="block text-xs text-purple-200/50 mb-1.5">Current name or handle</label>
-                <input
-                  className="input-dark w-full px-4 py-3 rounded-xl text-sm"
-                  placeholder="e.g. MyAgent, Zeon, trading-bot-01"
-                  value={form.agentName}
-                  onChange={e => setForm({ ...form, agentName: e.target.value })}
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs text-purple-200/50 mb-2">Agent type</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {AGENT_TYPES.map(t => (
-                    <div
-                      key={t.value}
-                      className={`option-pill rounded-xl p-3 text-center ${form.agentType === t.value ? "active" : ""}`}
-                      onClick={() => setForm({ ...form, agentType: t.value })}
-                    >
-                      <div className="text-xl mb-1">{t.icon}</div>
-                      <div className="text-xs text-purple-100">{t.label}</div>
-                    </div>
-                  ))}
+            {/* STEP 1 */}
+            {step === 1 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: "#f0ebff", marginBottom: 4 }}>Tell us about your agent</div>
+                  <div style={{ fontSize: 13, color: "rgba(200,185,255,0.4)" }}>We'll analyze it to craft the perfect identity</div>
                 </div>
-              </div>
 
-              <button
-                className="btn-primary w-full py-3 rounded-xl text-sm"
-                disabled={!canNext1}
-                onClick={() => setStep(2)}
-              >
-                Continue →
-              </button>
-            </div>
-          )}
-
-          {/* ── STEP 2: Capability & Personality ── */}
-          {step === 2 && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-lg font-semibold text-white">Capabilities & personality</h2>
-                <p className="text-purple-300/40 text-xs mt-0.5">Shape the identity your name will carry</p>
-              </div>
-
-              <div>
-                <label className="block text-xs text-purple-200/50 mb-2">Primary capability</label>
-                <div className="flex flex-wrap gap-2">
-                  {CAPABILITIES.map(c => (
-                    <div
-                      key={c}
-                      className={`option-pill rounded-full px-3 py-1.5 text-xs ${form.capability === c ? "active" : ""}`}
-                      onClick={() => setForm({ ...form, capability: c })}
-                    >
-                      {c}
-                    </div>
-                  ))}
+                <div>
+                  <span className="label">Current name or handle</span>
+                  <input className="input" placeholder="e.g. MyAgent, Zeon, trading-bot-01"
+                    value={form.agentName} onChange={e => setForm({ ...form, agentName: e.target.value })} />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-xs text-purple-200/50 mb-2">Personality</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {PERSONALITIES.map(p => (
-                    <div
-                      key={p.value}
-                      className={`option-pill rounded-xl p-3 ${form.personality === p.value ? "active" : ""}`}
-                      onClick={() => setForm({ ...form, personality: p.value })}
-                    >
-                      <div className="text-sm font-medium text-purple-100">{p.label}</div>
-                      <div className="text-xs text-purple-300/40 mt-0.5">{p.desc}</div>
-                    </div>
-                  ))}
+                <div>
+                  <span className="label">Agent type</span>
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
+                    {TYPES.map(t => (
+                      <div key={t.v} className={`option-card ${form.agentType === t.v ? "selected" : ""}`}
+                        onClick={() => setForm({ ...form, agentType: t.v })}>
+                        <div style={{ fontSize: 22, marginBottom: 6 }}>{t.e}</div>
+                        <div style={{ fontSize: 12, fontWeight: 500, color: "rgba(220,210,255,0.85)" }}>{t.l}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex gap-2">
-                <button className="btn-ghost flex-1 py-3 rounded-xl text-sm" onClick={() => setStep(1)}>← Back</button>
-                <button className="btn-primary flex-1 py-3 rounded-xl text-sm" disabled={!canNext2} onClick={() => setStep(3)}>
+                <button className="btn btn-primary" disabled={!form.agentName.trim() || !form.agentType}
+                  onClick={() => setStep(2)}>
                   Continue →
                 </button>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* ── STEP 3: Mission ── */}
-          {step === 3 && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-lg font-semibold text-white">Mission statement</h2>
-                <p className="text-purple-300/40 text-xs mt-0.5">What is this agent's core purpose?</p>
-              </div>
-
-              <div>
-                <textarea
-                  className="input-dark w-full px-4 py-3 rounded-xl text-sm resize-none leading-relaxed"
-                  rows={4}
-                  placeholder="e.g. An autonomous trading agent that monitors DeFi protocols 24/7, executes arbitrage strategies, and manages portfolio risk across multiple chains."
-                  value={form.purpose}
-                  onChange={e => setForm({ ...form, purpose: e.target.value })}
-                />
-                <p className="text-purple-300/25 text-xs mt-1.5">Be specific — better context = better names</p>
-              </div>
-
-              {error && (
-                <div className="text-red-400 text-xs p-3 bg-red-400/8 rounded-xl border border-red-400/15">
-                  {error}
+            {/* STEP 2 */}
+            {step === 2 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: "#f0ebff", marginBottom: 4 }}>Capability & personality</div>
+                  <div style={{ fontSize: 13, color: "rgba(200,185,255,0.4)" }}>Shape the identity your name will carry</div>
                 </div>
-              )}
 
-              <div className="flex gap-2">
-                <button className="btn-ghost flex-1 py-3 rounded-xl text-sm" onClick={() => setStep(2)}>← Back</button>
-                <button
-                  className="btn-primary flex-1 py-3 rounded-xl text-sm"
-                  disabled={!canGenerate || loading}
-                  onClick={handleGenerate}
-                >
-                  {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="w-3.5 h-3.5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                      Generating...
-                    </span>
-                  ) : "✦ Generate Names"}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* ── STEP 4: Results ── */}
-          {step === 4 && result && (
-            <div className="space-y-5">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="text-lg font-semibold text-white">Your agent names</h2>
-                  <span className="badge badge-green">3 generated</span>
+                <div>
+                  <span className="label">Primary capability</span>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                    {CAPS.map(c => (
+                      <div key={c} className={`chip ${form.capability === c ? "selected" : ""}`}
+                        onClick={() => setForm({ ...form, capability: c })}>
+                        {c}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-purple-300/40 text-xs">{result.analysis.naming_strategy}</p>
-              </div>
 
-              {/* Analysis */}
-              <div className="bg-white/[0.02] rounded-xl p-4 border border-white/5">
-                <p className="text-purple-200/50 text-xs leading-relaxed">{result.analysis.input_breakdown}</p>
-              </div>
+                <div>
+                  <span className="label">Personality</span>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                    {PERSONALITIES.map(p => (
+                      <div key={p.v} className={`option-card ${form.personality === p.v ? "selected" : ""}`}
+                        onClick={() => setForm({ ...form, personality: p.v })}
+                        style={{ textAlign: "left" }}>
+                        <div style={{ fontSize: 18, marginBottom: 4 }}>{p.e}</div>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: "#ddd6fe", marginBottom: 2 }}>{p.l}</div>
+                        <div style={{ fontSize: 11, color: "rgba(200,185,255,0.4)" }}>{p.d}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-              {/* Names */}
-              <div className="space-y-3">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 8 }}>
+                  <button className="btn btn-ghost" onClick={() => setStep(1)}>← Back</button>
+                  <button className="btn btn-primary" disabled={!form.capability || !form.personality}
+                    onClick={() => setStep(3)}>
+                    Continue →
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 3 */}
+            {step === 3 && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+                <div>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: "#f0ebff", marginBottom: 4 }}>Mission statement</div>
+                  <div style={{ fontSize: 13, color: "rgba(200,185,255,0.4)" }}>What is this agent's core purpose?</div>
+                </div>
+
+                <div>
+                  <textarea className="input" rows={4} style={{ resize: "none", lineHeight: 1.7 }}
+                    placeholder="e.g. An autonomous trading agent that monitors DeFi protocols 24/7, executes arbitrage strategies, and manages portfolio risk across multiple chains."
+                    value={form.purpose} onChange={e => setForm({ ...form, purpose: e.target.value })} />
+                  <div style={{ fontSize: 11, color: "rgba(200,185,255,0.22)", marginTop: 6 }}>
+                    Be specific — better context = better names
+                  </div>
+                </div>
+
+                {error && (
+                  <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#fca5a5" }}>
+                    {error}
+                  </div>
+                )}
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 8 }}>
+                  <button className="btn btn-ghost" onClick={() => setStep(2)}>← Back</button>
+                  <button className="btn btn-primary" disabled={!form.purpose.trim() || loading} onClick={generate}>
+                    {loading ? <><div className="spinner" /> Generating...</> : "✦ Generate Names"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 4 — Results */}
+            {step === 4 && result && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: "#f0ebff" }}>Your agent names</div>
+                    <span className="badge badge-green">3 names</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.35)", lineHeight: 1.5 }}>
+                    {result.analysis.naming_strategy}
+                  </div>
+                </div>
+
+                {/* Analysis pill */}
+                <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(167,139,250,0.1)", borderRadius: 12, padding: "12px 14px" }}>
+                  <div style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(167,139,250,0.4)", marginBottom: 6, fontWeight: 600 }}>Analysis</div>
+                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.5)", lineHeight: 1.7 }}>{result.analysis.input_breakdown}</div>
+                </div>
+
+                {/* Name cards */}
                 {result.names.map((n, i) => (
-                  <div
-                    key={i}
-                    className={`result-card rounded-xl p-5 cursor-pointer ${selected === i ? "ring-1 ring-purple-500/60" : ""}`}
-                    onClick={() => setSelected(selected === i ? null : i)}
-                  >
-                    <div className="flex items-start justify-between">
+                  <div key={i} className={`result-card ${picked === i ? "picked" : ""}`}
+                    onClick={() => setPicked(picked === i ? null : i)}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                       <div>
-                        <div className="flex items-baseline gap-2">
-                          <span className="text-2xl font-bold text-white tracking-tight">{n.name}</span>
-                          <span className="text-purple-300/50 text-xs font-mono">{n.ipa}</span>
-                        </div>
-                        <div className="flex items-center gap-2 mt-1">
-                          <code className="text-xs text-purple-400/70 font-mono">{n.domain}</code>
-                          <span className={`text-xs font-medium ${VIBE_COLORS[n.vibe]}`}>
-                            {n.vibe}
-                          </span>
+                        <div style={{ fontSize: 26, fontWeight: 800, color: "#f0ebff", letterSpacing: "-0.02em", lineHeight: 1 }}>{n.name}</div>
+                        <div style={{ fontSize: 11, color: "rgba(200,185,255,0.35)", fontFamily: "monospace", marginTop: 3 }}>{n.ipa}</div>
+                      </div>
+                      <div style={{ textAlign: "right" }}>
+                        <div className="domain-chip">{n.domain}</div>
+                        <div className={`${VIBE[n.vibe]}`} style={{ fontSize: 11, fontWeight: 500, marginTop: 5, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                          {n.vibe}
                         </div>
                       </div>
-                      <span className="text-purple-400/30 text-xs font-mono">#{i + 1}</span>
                     </div>
 
-                    <p className="text-purple-200/60 text-sm mt-2 italic">"{n.tagline}"</p>
+                    <div style={{ fontSize: 14, color: "rgba(220,210,255,0.65)", fontStyle: "italic", lineHeight: 1.5 }}>
+                      "{n.tagline}"
+                    </div>
 
-                    {selected === i && (
-                      <div className="mt-3 pt-3 border-t border-purple-500/10 space-y-2">
-                        <p className="text-purple-100/70 text-xs leading-relaxed">{n.meaning}</p>
-                        <p className="text-blue-300/50 text-xs leading-relaxed">→ {n.fit}</p>
+                    {picked === i && (
+                      <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(167,139,250,0.1)" }}>
+                        <div style={{ fontSize: 13, color: "rgba(210,200,255,0.65)", lineHeight: 1.7, marginBottom: 8 }}>{n.meaning}</div>
+                        <div style={{ fontSize: 12, color: "rgba(147,197,253,0.5)", lineHeight: 1.6 }}>→ {n.fit}</div>
                       </div>
                     )}
                   </div>
                 ))}
-              </div>
 
-              <div className="pt-1">
-                <div className="flex items-center gap-1.5 text-xs text-purple-300/30 mb-3">
-                  <span className="w-1.5 h-1.5 bg-green-400/60 rounded-full" />
-                  Tap a name to see details · Registration via .agent TLD coming soon
+                {/* Footer note */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 14px", background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.12)", borderRadius: 12 }}>
+                  <span style={{ fontSize: 16 }}>🔗</span>
+                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.45)", lineHeight: 1.5 }}>
+                    Tap a name to expand · On-chain registration via <strong style={{ color: "rgba(200,185,255,0.7)" }}>.agent TLD</strong> coming soon
+                  </div>
                 </div>
-                <button
-                  className="btn-ghost w-full py-2.5 rounded-xl text-sm"
-                  onClick={reset}
-                >
+
+                <button className="btn btn-ghost" style={{ marginTop: 4 }} onClick={reset}>
                   ← Generate new names
                 </button>
               </div>
-            </div>
-          )}
+            )}
+
+          </div>
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-6">
-          <p className="text-purple-300/15 text-xs">
-            Agent Naming Service · ERC-8004 · .agent TLD
+        <div style={{ textAlign: "center", marginTop: 28 }}>
+          <p style={{ fontSize: 11, color: "rgba(200,185,255,0.12)", letterSpacing: "0.05em" }}>
+            AGENT NAMING SERVICE · ERC-8004 · .AGENT TLD
           </p>
         </div>
-
-        </div>{/* end card wrapper */}
       </div>
     </div>
   );
