@@ -47,10 +47,10 @@ const T = {
     step2_sub: "이름이 담을 정체성을 설계합니다",
     cap_label: "주요 기능",
     pers_label: "성격",
-    step3_title: "미션 선언",
-    step3_sub: "이 에이전트의 핵심 목적은 무엇인가요?",
+    step3_title: "미션 선언 (선택)",
+    step3_sub: "이 에이전트의 핵심 목적을 적으면 더 정교한 이름이 만들어져요",
     purpose_ph: "예: 24시간 DeFi 프로토콜을 모니터링하고, 차익거래 전략을 실행하며, 여러 체인에 걸쳐 포트폴리오 리스크를 관리하는 자율 트레이딩 에이전트.",
-    purpose_hint: "구체적일수록 더 좋은 이름이 나와요",
+    purpose_hint: "생략해도 괜찮아요 — 바로 이름을 생성할 수 있어요",
     gen_btn: "✦ 이름 생성",
     generating: "생성 중...",
     back: "← 이전",
@@ -102,10 +102,10 @@ const T = {
     step2_sub: "Shape the identity your name will carry",
     cap_label: "Primary capability",
     pers_label: "Personality",
-    step3_title: "Mission statement",
-    step3_sub: "What is this agent's core purpose?",
+    step3_title: "Mission Statement (Optional)",
+    step3_sub: "Adding a purpose helps generate more precise names — but you can skip it",
     purpose_ph: "e.g. An autonomous trading agent that monitors DeFi protocols 24/7, executes arbitrage strategies, and manages portfolio risk across multiple chains.",
-    purpose_hint: "Be specific — better context = better names",
+    purpose_hint: "Optional — you can generate names without this",
     gen_btn: "✦ Generate Names",
     generating: "Generating...",
     back: "← Back",
@@ -322,7 +322,7 @@ export default function Home() {
                 )}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 8 }}>
                   <button className="btn btn-ghost" onClick={() => setStep(2)}>{t.back}</button>
-                  <button className="btn btn-primary" disabled={!form.purpose.trim() || loading} onClick={generate}>
+                  <button className="btn btn-primary" disabled={loading} onClick={generate}>
                     {loading ? <><div className="spinner" /> {t.generating}</> : t.gen_btn}
                   </button>
                 </div>
