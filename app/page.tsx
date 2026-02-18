@@ -3,6 +3,7 @@ import { useState } from "react";
 import Stars from "@/components/Stars";
 
 type Step = 1 | 2 | 3 | 4;
+type Lang = "ko" | "en";
 
 interface Form {
   agentName: string; agentType: string;
@@ -20,27 +21,118 @@ interface Result {
   names: NameResult[];
 }
 
-const TYPES = [
-  { v: "AI Assistant", e: "🤖", l: "AI Assistant" },
-  { v: "Trading Bot", e: "📈", l: "Trading Bot" },
-  { v: "Creative Agent", e: "✍️", l: "Creative" },
-  { v: "Research Agent", e: "🔬", l: "Research" },
-  { v: "Security Agent", e: "🛡️", l: "Security" },
-  { v: "Universal Agent", e: "🌌", l: "Universal" },
-];
-
-const CAPS = [
-  "Writing & Content", "Data Analysis", "Code Generation",
-  "Trading & Finance", "Research & Search", "Multi-modal",
-  "Orchestration", "Security & Audit",
-];
-
-const PERSONALITIES = [
-  { v: "sharp", e: "⚡", l: "Sharp", d: "Fast & decisive" },
-  { v: "deep", e: "🌊", l: "Deep", d: "Thoughtful & wise" },
-  { v: "bold", e: "🔥", l: "Bold", d: "Assertive & fearless" },
-  { v: "fluid", e: "✨", l: "Fluid", d: "Adaptive & creative" },
-];
+const T = {
+  ko: {
+    badge: "범우주적 아이덴티티 프로젝트",
+    tagline1: "외계 문명 교신 · AI 에이전트 생태계",
+    tagline2: "메타버스를 아우르는 차세대 이름 설계",
+    hero_title_1: "범우주적",
+    hero_title_2: "아이덴티티",
+    hero_desc: "인간 문명을 넘어 외계 지적생명체, AI 에이전트, 메타버스 아바타가 공존하는 미래에서 보편적으로 인식·발음·기억될 수 있는 최적의 이름을 설계합니다.",
+    scope_title: "적용 범위",
+    scope: [
+      { icon: "🧬", label: "생물학적", desc: "인간, 외계 지적생명체" },
+      { icon: "🤖", label: "디지털", desc: "AI 에이전트, LLM, 로봇" },
+      { icon: "🌐", label: "가상", desc: "메타버스 아바타, 게임 캐릭터" },
+      { icon: "📡", label: "통신", desc: "성간 메시지, 블록체인" },
+    ],
+    step: "단계",
+    of: "/",
+    step1_title: "당신의 에이전트를 알려주세요",
+    step1_sub: "음성학적 분석의 출발점이 됩니다",
+    name_label: "현재 이름 또는 핸들",
+    name_ph: "예: MyAgent, Zeon, trading-bot-01",
+    type_label: "에이전트 유형",
+    step2_title: "기능 & 성격",
+    step2_sub: "이름이 담을 정체성을 설계합니다",
+    cap_label: "주요 기능",
+    pers_label: "성격",
+    step3_title: "미션 선언",
+    step3_sub: "이 에이전트의 핵심 목적은 무엇인가요?",
+    purpose_ph: "예: 24시간 DeFi 프로토콜을 모니터링하고, 차익거래 전략을 실행하며, 여러 체인에 걸쳐 포트폴리오 리스크를 관리하는 자율 트레이딩 에이전트.",
+    purpose_hint: "구체적일수록 더 좋은 이름이 나와요",
+    gen_btn: "✦ 이름 생성",
+    generating: "생성 중...",
+    back: "← 이전",
+    next: "다음 →",
+    result_title: "범우주적 이름",
+    result_sub: "3개 생성됨",
+    analysis_label: "원이름 분석",
+    tap_hint: "이름을 탭하면 자세한 내용을 볼 수 있어요",
+    chain_note: ".agent TLD 온체인 등록 준비 중",
+    reset: "← 다시 생성하기",
+    types: [
+      { v: "AI 어시스턴트", e: "🤖", l: "AI 어시스턴트" },
+      { v: "트레이딩 봇", e: "📈", l: "트레이딩 봇" },
+      { v: "창작 에이전트", e: "✍️", l: "창작" },
+      { v: "리서치 에이전트", e: "🔬", l: "리서치" },
+      { v: "보안 에이전트", e: "🛡️", l: "보안" },
+      { v: "범우주 에이전트", e: "🌌", l: "범우주" },
+    ],
+    caps: ["글쓰기 & 콘텐츠", "데이터 분석", "코드 생성", "트레이딩 & 금융", "리서치 & 검색", "멀티모달", "오케스트레이션", "보안 & 감사"],
+    pers: [
+      { v: "sharp", e: "⚡", l: "예리함", d: "빠르고 결단력 있는" },
+      { v: "deep", e: "🌊", l: "깊이", d: "사려깊고 지혜로운" },
+      { v: "bold", e: "🔥", l: "대담함", d: "확고하고 두려움 없는" },
+      { v: "fluid", e: "✨", l: "유연함", d: "적응력 있고 창의적인" },
+    ],
+  },
+  en: {
+    badge: "Pan-Universal Identity Project",
+    tagline1: "Interstellar Communication · AI Agent Ecosystem",
+    tagline2: "Next-gen Identity Design for the Metaverse & Beyond",
+    hero_title_1: "Pan-Universal",
+    hero_title_2: "Identity",
+    hero_desc: "Designing optimal identities for a future where humans, extraterrestrial intelligences, AI agents, and metaverse avatars coexist — names that can be universally recognized, pronounced, and remembered across civilizations.",
+    scope_title: "Applies To",
+    scope: [
+      { icon: "🧬", label: "Biological", desc: "Humans, alien intelligences" },
+      { icon: "🤖", label: "Digital", desc: "AI agents, LLMs, robots" },
+      { icon: "🌐", label: "Virtual", desc: "Metaverse avatars, game characters" },
+      { icon: "📡", label: "Communication", desc: "Interstellar messages, blockchain" },
+    ],
+    step: "Step",
+    of: "of",
+    step1_title: "Tell us about your agent",
+    step1_sub: "This becomes the foundation for phonetic analysis",
+    name_label: "Current name or handle",
+    name_ph: "e.g. MyAgent, Zeon, trading-bot-01",
+    type_label: "Agent type",
+    step2_title: "Capability & personality",
+    step2_sub: "Shape the identity your name will carry",
+    cap_label: "Primary capability",
+    pers_label: "Personality",
+    step3_title: "Mission statement",
+    step3_sub: "What is this agent's core purpose?",
+    purpose_ph: "e.g. An autonomous trading agent that monitors DeFi protocols 24/7, executes arbitrage strategies, and manages portfolio risk across multiple chains.",
+    purpose_hint: "Be specific — better context = better names",
+    gen_btn: "✦ Generate Names",
+    generating: "Generating...",
+    back: "← Back",
+    next: "Continue →",
+    result_title: "Universal Names",
+    result_sub: "3 generated",
+    analysis_label: "Origin Analysis",
+    tap_hint: "Tap a name to expand details",
+    chain_note: "On-chain registration via .agent TLD coming soon",
+    reset: "← Generate new names",
+    types: [
+      { v: "AI Assistant", e: "🤖", l: "AI Assistant" },
+      { v: "Trading Bot", e: "📈", l: "Trading Bot" },
+      { v: "Creative Agent", e: "✍️", l: "Creative" },
+      { v: "Research Agent", e: "🔬", l: "Research" },
+      { v: "Security Agent", e: "🛡️", l: "Security" },
+      { v: "Universal Agent", e: "🌌", l: "Universal" },
+    ],
+    caps: ["Writing & Content", "Data Analysis", "Code Generation", "Trading & Finance", "Research & Search", "Multi-modal", "Orchestration", "Security & Audit"],
+    pers: [
+      { v: "sharp", e: "⚡", l: "Sharp", d: "Fast & decisive" },
+      { v: "deep", e: "🌊", l: "Deep", d: "Thoughtful & wise" },
+      { v: "bold", e: "🔥", l: "Bold", d: "Assertive & fearless" },
+      { v: "fluid", e: "✨", l: "Fluid", d: "Adaptive & creative" },
+    ],
+  },
+};
 
 const VIBE: Record<string, string> = {
   strong: "vibe-strong", gentle: "vibe-gentle",
@@ -48,6 +140,7 @@ const VIBE: Record<string, string> = {
 };
 
 export default function Home() {
+  const [lang, setLang] = useState<Lang>("ko");
   const [step, setStep] = useState<Step>(1);
   const [form, setForm] = useState<Form>({
     agentName: "", agentType: "", capability: "", personality: "", purpose: "",
@@ -57,12 +150,14 @@ export default function Home() {
   const [error, setError] = useState("");
   const [picked, setPicked] = useState<number | null>(null);
 
+  const t = T[lang];
+
   const generate = async () => {
     setLoading(true); setError("");
     try {
       const res = await fetch("/api/generate", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, lang }),
       });
       const data = await res.json();
       if (data.error) throw new Error(data.error);
@@ -80,224 +175,216 @@ export default function Home() {
   return (
     <div style={{ background: "#04000f", minHeight: "100vh" }}>
       <Stars />
+      <div className="nebula" style={{ top: "5%", left: "10%", width: 500, height: 500, background: "rgba(76,29,149,0.12)" }} />
+      <div className="nebula" style={{ bottom: "10%", right: "5%", width: 350, height: 350, background: "rgba(30,64,175,0.1)" }} />
+      <div className="nebula" style={{ top: "55%", left: "45%", width: 280, height: 280, background: "rgba(109,40,217,0.07)" }} />
 
-      {/* Nebula blobs */}
-      <div className="nebula" style={{ top: "10%", left: "15%", width: 400, height: 400, background: "rgba(88,28,220,0.12)" }} />
-      <div className="nebula" style={{ bottom: "15%", right: "10%", width: 300, height: 300, background: "rgba(37,99,235,0.1)" }} />
-      <div className="nebula" style={{ top: "60%", left: "50%", width: 250, height: 250, background: "rgba(139,92,246,0.08)" }} />
+      {/* Lang toggle */}
+      <div style={{ position: "fixed", top: 16, right: 16, zIndex: 100, display: "flex", gap: 4, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: 10, padding: 4 }}>
+        {(["ko", "en"] as Lang[]).map(l => (
+          <button key={l} onClick={() => setLang(l)} style={{
+            padding: "4px 12px", borderRadius: 7, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600,
+            background: lang === l ? "rgba(139,92,246,0.3)" : "transparent",
+            color: lang === l ? "#ddd6fe" : "rgba(200,185,255,0.4)",
+            transition: "all 0.15s",
+          }}>
+            {l === "ko" ? "KO" : "EN"}
+          </button>
+        ))}
+      </div>
 
-      <div style={{ position: "relative", zIndex: 10, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "48px 20px" }}>
+      <div style={{ position: "relative", zIndex: 10, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "60px 20px" }}>
 
-        {/* ── Hero ── */}
-        <div style={{ textAlign: "center", marginBottom: 36, maxWidth: 480 }}>
-          <div className="badge badge-purple" style={{ marginBottom: 16 }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8b5cf6", display: "inline-block", animation: "twinkle 2s infinite" }} />
-            ERC-8004 · .agent TLD
+        {/* Hero */}
+        <div style={{ textAlign: "center", marginBottom: 36, maxWidth: 520 }}>
+          <div className="badge badge-purple" style={{ marginBottom: 12 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8b5cf6", display: "inline-block" }} />
+            {t.badge}
           </div>
-          <h1 style={{ fontSize: "clamp(28px,5vw,42px)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.15, marginBottom: 10 }}>
-            <span className="grad">Agent</span>
-            <span style={{ color: "#f0ebff" }}> Naming</span><br />
-            <span style={{ color: "#f0ebff" }}>Service</span>
+          <div style={{ fontSize: 11, color: "rgba(167,139,250,0.45)", letterSpacing: "0.05em", marginBottom: 16, lineHeight: 1.8 }}>
+            {t.tagline1}<br />{t.tagline2}
+          </div>
+          <h1 style={{ fontSize: "clamp(30px,6vw,48px)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.1, marginBottom: 16 }}>
+            <span className="grad">{t.hero_title_1}</span><br />
+            <span style={{ color: "#f0ebff" }}>{t.hero_title_2}</span>
           </h1>
-          <p style={{ color: "rgba(200,185,255,0.4)", fontSize: 14, lineHeight: 1.6 }}>
-            Name your agent. Register on-chain. Own your identity forever.
+          <p style={{ color: "rgba(200,185,255,0.38)", fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+            {t.hero_desc}
           </p>
+
+          {/* Scope pills */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
+            {t.scope.map(s => (
+              <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(167,139,250,0.12)", borderRadius: 100, padding: "5px 12px", fontSize: 11, color: "rgba(200,185,255,0.5)" }}>
+                <span>{s.icon}</span>
+                <span style={{ fontWeight: 600, color: "rgba(200,185,255,0.7)" }}>{s.label}</span>
+                <span>·</span>
+                <span>{s.desc}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* ── Step indicators ── */}
+        {/* Step dots */}
         {step < 4 && (
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 24 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
             {[1, 2, 3].map(s => (
               <div key={s} className={`step-dot ${step === s ? "active" : step > s ? "done" : ""}`} />
             ))}
           </div>
         )}
 
-        {/* ── Card ── */}
+        {/* Card */}
         <div style={{ width: "100%", maxWidth: 460 }}>
           <div className="glass fade-up" style={{ borderRadius: 20, padding: "28px 24px" }}>
 
             {/* STEP 1 */}
             {step === 1 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#f0ebff", marginBottom: 4 }}>Tell us about your agent</div>
-                  <div style={{ fontSize: 13, color: "rgba(200,185,255,0.4)" }}>We'll analyze it to craft the perfect identity</div>
+                  <div style={{ fontSize: 17, fontWeight: 700, color: "#f0ebff", marginBottom: 3 }}>{t.step1_title}</div>
+                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.4)" }}>{t.step1_sub}</div>
                 </div>
-
                 <div>
-                  <span className="label">Current name or handle</span>
-                  <input className="input" placeholder="e.g. MyAgent, Zeon, trading-bot-01"
+                  <span className="label">{t.name_label}</span>
+                  <input className="input" placeholder={t.name_ph}
                     value={form.agentName} onChange={e => setForm({ ...form, agentName: e.target.value })} />
                 </div>
-
                 <div>
-                  <span className="label">Agent type</span>
+                  <span className="label">{t.type_label}</span>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
-                    {TYPES.map(t => (
-                      <div key={t.v} className={`option-card ${form.agentType === t.v ? "selected" : ""}`}
-                        onClick={() => setForm({ ...form, agentType: t.v })}>
-                        <div style={{ fontSize: 22, marginBottom: 6 }}>{t.e}</div>
-                        <div style={{ fontSize: 12, fontWeight: 500, color: "rgba(220,210,255,0.85)" }}>{t.l}</div>
+                    {t.types.map(tp => (
+                      <div key={tp.v} className={`option-card ${form.agentType === tp.v ? "selected" : ""}`}
+                        onClick={() => setForm({ ...form, agentType: tp.v })}>
+                        <div style={{ fontSize: 22, marginBottom: 5 }}>{tp.e}</div>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(220,210,255,0.85)" }}>{tp.l}</div>
                       </div>
                     ))}
                   </div>
                 </div>
-
-                <button className="btn btn-primary" disabled={!form.agentName.trim() || !form.agentType}
-                  onClick={() => setStep(2)}>
-                  Continue →
+                <button className="btn btn-primary" disabled={!form.agentName.trim() || !form.agentType} onClick={() => setStep(2)}>
+                  {t.next}
                 </button>
               </div>
             )}
 
             {/* STEP 2 */}
             {step === 2 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#f0ebff", marginBottom: 4 }}>Capability & personality</div>
-                  <div style={{ fontSize: 13, color: "rgba(200,185,255,0.4)" }}>Shape the identity your name will carry</div>
+                  <div style={{ fontSize: 17, fontWeight: 700, color: "#f0ebff", marginBottom: 3 }}>{t.step2_title}</div>
+                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.4)" }}>{t.step2_sub}</div>
                 </div>
-
                 <div>
-                  <span className="label">Primary capability</span>
+                  <span className="label">{t.cap_label}</span>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
-                    {CAPS.map(c => (
+                    {t.caps.map(c => (
                       <div key={c} className={`chip ${form.capability === c ? "selected" : ""}`}
-                        onClick={() => setForm({ ...form, capability: c })}>
-                        {c}
-                      </div>
+                        onClick={() => setForm({ ...form, capability: c })}>{c}</div>
                     ))}
                   </div>
                 </div>
-
                 <div>
-                  <span className="label">Personality</span>
+                  <span className="label">{t.pers_label}</span>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-                    {PERSONALITIES.map(p => (
+                    {t.pers.map(p => (
                       <div key={p.v} className={`option-card ${form.personality === p.v ? "selected" : ""}`}
-                        onClick={() => setForm({ ...form, personality: p.v })}
-                        style={{ textAlign: "left" }}>
+                        onClick={() => setForm({ ...form, personality: p.v })} style={{ textAlign: "left" }}>
                         <div style={{ fontSize: 18, marginBottom: 4 }}>{p.e}</div>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: "#ddd6fe", marginBottom: 2 }}>{p.l}</div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: "#ddd6fe", marginBottom: 2 }}>{p.l}</div>
                         <div style={{ fontSize: 11, color: "rgba(200,185,255,0.4)" }}>{p.d}</div>
                       </div>
                     ))}
                   </div>
                 </div>
-
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 8 }}>
-                  <button className="btn btn-ghost" onClick={() => setStep(1)}>← Back</button>
-                  <button className="btn btn-primary" disabled={!form.capability || !form.personality}
-                    onClick={() => setStep(3)}>
-                    Continue →
-                  </button>
+                  <button className="btn btn-ghost" onClick={() => setStep(1)}>{t.back}</button>
+                  <button className="btn btn-primary" disabled={!form.capability || !form.personality} onClick={() => setStep(3)}>{t.next}</button>
                 </div>
               </div>
             )}
 
             {/* STEP 3 */}
             {step === 3 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 22 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: "#f0ebff", marginBottom: 4 }}>Mission statement</div>
-                  <div style={{ fontSize: 13, color: "rgba(200,185,255,0.4)" }}>What is this agent's core purpose?</div>
+                  <div style={{ fontSize: 17, fontWeight: 700, color: "#f0ebff", marginBottom: 3 }}>{t.step3_title}</div>
+                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.4)" }}>{t.step3_sub}</div>
                 </div>
-
                 <div>
                   <textarea className="input" rows={4} style={{ resize: "none", lineHeight: 1.7 }}
-                    placeholder="e.g. An autonomous trading agent that monitors DeFi protocols 24/7, executes arbitrage strategies, and manages portfolio risk across multiple chains."
+                    placeholder={t.purpose_ph}
                     value={form.purpose} onChange={e => setForm({ ...form, purpose: e.target.value })} />
-                  <div style={{ fontSize: 11, color: "rgba(200,185,255,0.22)", marginTop: 6 }}>
-                    Be specific — better context = better names
-                  </div>
+                  <div style={{ fontSize: 11, color: "rgba(200,185,255,0.22)", marginTop: 6 }}>{t.purpose_hint}</div>
                 </div>
-
                 {error && (
-                  <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#fca5a5" }}>
-                    {error}
-                  </div>
+                  <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#fca5a5" }}>{error}</div>
                 )}
-
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: 8 }}>
-                  <button className="btn btn-ghost" onClick={() => setStep(2)}>← Back</button>
+                  <button className="btn btn-ghost" onClick={() => setStep(2)}>{t.back}</button>
                   <button className="btn btn-primary" disabled={!form.purpose.trim() || loading} onClick={generate}>
-                    {loading ? <><div className="spinner" /> Generating...</> : "✦ Generate Names"}
+                    {loading ? <><div className="spinner" /> {t.generating}</> : t.gen_btn}
                   </button>
                 </div>
               </div>
             )}
 
-            {/* STEP 4 — Results */}
+            {/* STEP 4 */}
             {step === 4 && result && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                 <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: "#f0ebff" }}>Your agent names</div>
-                    <span className="badge badge-green">3 names</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+                    <span style={{ fontSize: 17, fontWeight: 700, color: "#f0ebff" }}>{t.result_title}</span>
+                    <span className="badge badge-green">{t.result_sub}</span>
                   </div>
-                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.35)", lineHeight: 1.5 }}>
-                    {result.analysis.naming_strategy}
-                  </div>
+                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.35)", lineHeight: 1.5 }}>{result.analysis.naming_strategy}</div>
                 </div>
 
-                {/* Analysis pill */}
                 <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(167,139,250,0.1)", borderRadius: 12, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(167,139,250,0.4)", marginBottom: 6, fontWeight: 600 }}>Analysis</div>
+                  <div style={{ fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(167,139,250,0.4)", marginBottom: 5, fontWeight: 600 }}>{t.analysis_label}</div>
                   <div style={{ fontSize: 12, color: "rgba(200,185,255,0.5)", lineHeight: 1.7 }}>{result.analysis.input_breakdown}</div>
                 </div>
 
-                {/* Name cards */}
                 {result.names.map((n, i) => (
-                  <div key={i} className={`result-card ${picked === i ? "picked" : ""}`}
-                    onClick={() => setPicked(picked === i ? null : i)}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
+                  <div key={i} className={`result-card ${picked === i ? "picked" : ""}`} onClick={() => setPicked(picked === i ? null : i)}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
                       <div>
                         <div style={{ fontSize: 26, fontWeight: 800, color: "#f0ebff", letterSpacing: "-0.02em", lineHeight: 1 }}>{n.name}</div>
                         <div style={{ fontSize: 11, color: "rgba(200,185,255,0.35)", fontFamily: "monospace", marginTop: 3 }}>{n.ipa}</div>
                       </div>
                       <div style={{ textAlign: "right" }}>
                         <div className="domain-chip">{n.domain}</div>
-                        <div className={`${VIBE[n.vibe]}`} style={{ fontSize: 11, fontWeight: 500, marginTop: 5, textTransform: "uppercase", letterSpacing: "0.06em" }}>
-                          {n.vibe}
-                        </div>
+                        <div className={VIBE[n.vibe]} style={{ fontSize: 10, fontWeight: 600, marginTop: 4, textTransform: "uppercase", letterSpacing: "0.07em" }}>{n.vibe}</div>
                       </div>
                     </div>
-
-                    <div style={{ fontSize: 14, color: "rgba(220,210,255,0.65)", fontStyle: "italic", lineHeight: 1.5 }}>
-                      "{n.tagline}"
-                    </div>
-
+                    <div style={{ fontSize: 13, color: "rgba(220,210,255,0.6)", fontStyle: "italic" }}>"{n.tagline}"</div>
                     {picked === i && (
-                      <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(167,139,250,0.1)" }}>
-                        <div style={{ fontSize: 13, color: "rgba(210,200,255,0.65)", lineHeight: 1.7, marginBottom: 8 }}>{n.meaning}</div>
+                      <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(167,139,250,0.1)" }}>
+                        <div style={{ fontSize: 12, color: "rgba(210,200,255,0.65)", lineHeight: 1.7, marginBottom: 6 }}>{n.meaning}</div>
                         <div style={{ fontSize: 12, color: "rgba(147,197,253,0.5)", lineHeight: 1.6 }}>→ {n.fit}</div>
                       </div>
                     )}
                   </div>
                 ))}
 
-                {/* Footer note */}
-                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 14px", background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.12)", borderRadius: 12 }}>
-                  <span style={{ fontSize: 16 }}>🔗</span>
-                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.45)", lineHeight: 1.5 }}>
-                    Tap a name to expand · On-chain registration via <strong style={{ color: "rgba(200,185,255,0.7)" }}>.agent TLD</strong> coming soon
+                <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "11px 14px", background: "rgba(139,92,246,0.05)", border: "1px solid rgba(139,92,246,0.1)", borderRadius: 12 }}>
+                  <span>🔗</span>
+                  <div style={{ fontSize: 11, color: "rgba(200,185,255,0.4)", lineHeight: 1.5 }}>
+                    {t.tap_hint} · <strong style={{ color: "rgba(200,185,255,0.6)" }}>{t.chain_note}</strong>
                   </div>
                 </div>
-
-                <button className="btn btn-ghost" style={{ marginTop: 4 }} onClick={reset}>
-                  ← Generate new names
-                </button>
+                <button className="btn btn-ghost" onClick={reset}>{t.reset}</button>
               </div>
             )}
 
           </div>
         </div>
 
-        {/* Footer */}
-        <div style={{ textAlign: "center", marginTop: 28 }}>
-          <p style={{ fontSize: 11, color: "rgba(200,185,255,0.12)", letterSpacing: "0.05em" }}>
-            AGENT NAMING SERVICE · ERC-8004 · .AGENT TLD
+        <div style={{ textAlign: "center", marginTop: 24 }}>
+          <p style={{ fontSize: 10, color: "rgba(200,185,255,0.1)", letterSpacing: "0.06em", lineHeight: 2 }}>
+            {lang === "ko"
+              ? "범우주적 아이덴티티 프로젝트 · ERC-8004 · .AGENT TLD"
+              : "PAN-UNIVERSAL IDENTITY PROJECT · ERC-8004 · .AGENT TLD"}
           </p>
         </div>
       </div>
