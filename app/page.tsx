@@ -28,7 +28,7 @@ const T = {
     tagline2: "메타버스를 아우르는 차세대 이름 설계",
     hero_title_1: "범우주적",
     hero_title_2: "아이덴티티",
-    hero_desc: "인간 문명을 넘어 외계 지적생명체, AI 에이전트, 메타버스 아바타가 공존하는 미래에서 보편적으로 인식·발음·기억될 수 있는 최적의 이름을 설계합니다.",
+    hero_desc: "당신의 이름을 분석해 인간·AI·외계 지적생명체·메타버스 아바타 모두가 인식하고 기억할 수 있는 보편적 이름을 설계합니다.",
     scope_title: "적용 범위",
     scope: [
       { icon: "🧬", label: "생물학적", desc: "인간, 외계 지적생명체" },
@@ -38,11 +38,11 @@ const T = {
     ],
     step: "단계",
     of: "/",
-    step1_title: "당신의 에이전트를 알려주세요",
-    step1_sub: "음성학적 분석의 출발점이 됩니다",
-    name_label: "현재 이름 또는 핸들",
-    name_ph: "예: MyAgent, Zeon, trading-bot-01",
-    type_label: "에이전트 유형",
+    step1_title: "당신의 이름을 알려주세요",
+    step1_sub: "당신의 이름을 바탕으로 범우주적 이름을 만들어드려요",
+    name_label: "본인 이름 (한국어 또는 영어)",
+    name_ph: "예: 김서준, Simon, 박지민",
+    type_label: "어떤 존재를 위한 이름인가요?",
     step2_title: "기능 & 성격",
     step2_sub: "이름이 담을 정체성을 설계합니다",
     cap_label: "주요 기능",
@@ -83,7 +83,7 @@ const T = {
     tagline2: "Next-gen Identity Design for the Metaverse & Beyond",
     hero_title_1: "Pan-Universal",
     hero_title_2: "Identity",
-    hero_desc: "Designing optimal identities for a future where humans, extraterrestrial intelligences, AI agents, and metaverse avatars coexist — names that can be universally recognized, pronounced, and remembered across civilizations.",
+    hero_desc: "We analyze your name to design a universal identity — one that humans, AI agents, extraterrestrial intelligences, and metaverse avatars can all recognize and remember.",
     scope_title: "Applies To",
     scope: [
       { icon: "🧬", label: "Biological", desc: "Humans, alien intelligences" },
@@ -93,11 +93,11 @@ const T = {
     ],
     step: "Step",
     of: "of",
-    step1_title: "Tell us about your agent",
-    step1_sub: "This becomes the foundation for phonetic analysis",
-    name_label: "Current name or handle",
-    name_ph: "e.g. MyAgent, Zeon, trading-bot-01",
-    type_label: "Agent type",
+    step1_title: "What's your name?",
+    step1_sub: "We'll use your name as the phonetic foundation for your universal identity",
+    name_label: "Your name (Korean or English)",
+    name_ph: "e.g. Seojun, Simon, Jimin",
+    type_label: "What is this identity for?",
     step2_title: "Capability & personality",
     step2_sub: "Shape the identity your name will carry",
     cap_label: "Primary capability",
@@ -197,28 +197,28 @@ export default function Home() {
 
         {/* Hero */}
         <div style={{ textAlign: "center", marginBottom: 36, maxWidth: 520 }}>
-          <div className="badge badge-purple" style={{ marginBottom: 12 }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#8b5cf6", display: "inline-block" }} />
+          <div className="badge badge-purple" style={{ marginBottom: 14, fontSize: 13, padding: "6px 14px" }}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#8b5cf6", display: "inline-block" }} />
             {t.badge}
           </div>
-          <div style={{ fontSize: 11, color: "rgba(167,139,250,0.45)", letterSpacing: "0.05em", marginBottom: 16, lineHeight: 1.8 }}>
+          <div style={{ fontSize: 14, color: "rgba(167,139,250,0.55)", letterSpacing: "0.04em", marginBottom: 18, lineHeight: 2 }}>
             {t.tagline1}<br />{t.tagline2}
           </div>
-          <h1 style={{ fontSize: "clamp(30px,6vw,48px)", fontWeight: 800, letterSpacing: "-0.02em", lineHeight: 1.1, marginBottom: 16 }}>
+          <h1 style={{ fontSize: "clamp(38px,7vw,58px)", fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: 20 }}>
             <span className="grad">{t.hero_title_1}</span><br />
             <span style={{ color: "#f0ebff" }}>{t.hero_title_2}</span>
           </h1>
-          <p style={{ color: "rgba(200,185,255,0.38)", fontSize: 13, lineHeight: 1.8, marginBottom: 20 }}>
+          <p style={{ color: "rgba(200,185,255,0.55)", fontSize: 15, lineHeight: 1.9, marginBottom: 24, maxWidth: 440 }}>
             {t.hero_desc}
           </p>
 
           {/* Scope pills */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
             {t.scope.map(s => (
-              <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(167,139,250,0.12)", borderRadius: 100, padding: "5px 12px", fontSize: 11, color: "rgba(200,185,255,0.5)" }}>
-                <span>{s.icon}</span>
-                <span style={{ fontWeight: 600, color: "rgba(200,185,255,0.7)" }}>{s.label}</span>
-                <span>·</span>
+              <div key={s.label} style={{ display: "flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: 100, padding: "7px 14px", fontSize: 13, color: "rgba(200,185,255,0.55)" }}>
+                <span style={{ fontSize: 15 }}>{s.icon}</span>
+                <span style={{ fontWeight: 700, color: "rgba(200,185,255,0.8)" }}>{s.label}</span>
+                <span style={{ color: "rgba(167,139,250,0.4)" }}>·</span>
                 <span>{s.desc}</span>
               </div>
             ))}
@@ -242,27 +242,27 @@ export default function Home() {
             {step === 1 && (
               <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                 <div>
-                  <div style={{ fontSize: 17, fontWeight: 700, color: "#f0ebff", marginBottom: 3 }}>{t.step1_title}</div>
-                  <div style={{ fontSize: 12, color: "rgba(200,185,255,0.4)" }}>{t.step1_sub}</div>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: "#f0ebff", marginBottom: 6 }}>{t.step1_title}</div>
+                  <div style={{ fontSize: 14, color: "rgba(200,185,255,0.5)", lineHeight: 1.6 }}>{t.step1_sub}</div>
                 </div>
                 <div>
-                  <span className="label">{t.name_label}</span>
-                  <input className="input" placeholder={t.name_ph}
+                  <span className="label" style={{ fontSize: 12 }}>{t.name_label}</span>
+                  <input className="input" style={{ fontSize: 16 }} placeholder={t.name_ph}
                     value={form.agentName} onChange={e => setForm({ ...form, agentName: e.target.value })} />
                 </div>
                 <div>
-                  <span className="label">{t.type_label}</span>
+                  <span className="label" style={{ fontSize: 12 }}>{t.type_label}</span>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 8 }}>
                     {t.types.map(tp => (
                       <div key={tp.v} className={`option-card ${form.agentType === tp.v ? "selected" : ""}`}
                         onClick={() => setForm({ ...form, agentType: tp.v })}>
-                        <div style={{ fontSize: 22, marginBottom: 5 }}>{tp.e}</div>
-                        <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(220,210,255,0.85)" }}>{tp.l}</div>
+                        <div style={{ fontSize: 24, marginBottom: 6 }}>{tp.e}</div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "rgba(220,210,255,0.9)" }}>{tp.l}</div>
                       </div>
                     ))}
                   </div>
                 </div>
-                <button className="btn btn-primary" disabled={!form.agentName.trim() || !form.agentType} onClick={() => setStep(2)}>
+                <button className="btn btn-primary" style={{ fontSize: 16, padding: "15px 24px" }} disabled={!form.agentName.trim() || !form.agentType} onClick={() => setStep(2)}>
                   {t.next}
                 </button>
               </div>
